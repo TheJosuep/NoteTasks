@@ -9,19 +9,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.thejosuep.notetasks.ui.screens.main.MainScreen
 
 @Composable
 fun Navigation(
     navController: NavHostController
 ){
-
     NavHost(
         navController = navController,
         startDestination = Screens.MainScreen.route
     ){
-
+        // Main screen
         composable(route = Screens.MainScreen.route){
-            
+            MainScreen()
         }
 
         // Notes graph
