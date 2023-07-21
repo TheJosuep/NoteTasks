@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,6 +38,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -44,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,28 +56,39 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.thejosuep.notetasks.R
-import com.thejosuep.notetasks.navigation.Navigation
 import com.thejosuep.notetasks.navigation.Screens
+import com.thejosuep.notetasks.ui.screens.dont.DoNotScreen
+import com.thejosuep.notetasks.ui.screens.notes.NotesScreen
+import com.thejosuep.notetasks.ui.screens.todo.ToDoScreen
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
-    navController: NavHostController,
-    onNavigation: (String) -> Unit,
     onSearchClick: () -> Unit
 ) {
+    var isNavigationOpened by remember("navigation"){ mutableStateOf(false) }
+
+    val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
 
     val navigationList = listOf(
-        Triple(Screens.NotesScreen.route, Icons.Default.Notes, R.string.title_notes),
-        Triple(Screens.ToDoScreen.route, Icons.Outlined.CheckBox, R.string.title_to_do),
-        Triple(Screens.DoNotScreen.route, Icons.Default.CalendarToday, R.string.title_do_not),
-        Triple("", Icons.Default.History, R.string.title_history)
+        Triple(0, Icons.Default.Notes, R.string.title_notes),
+        Triple(1, Icons.Outlined.CheckBox, R.string.title_to_do),
+        Triple(2, Icons.Default.CalendarToday, R.string.title_do_not),
+        Triple(3, Icons.Default.History, R.string.title_history)
     )
 
-    var isNavigationOpened by remember("navigation"){ mutableStateOf(false) }
-    val currentRoute = currentRoute(navController)
+    val screenPages = listOf(
+        NotesScreen(),
+        ToDoScreen(),
+        DoNotScreen()
+    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -97,9 +111,15 @@ fun MainScreen(
                     exit = shrinkVertically()
                 ) {
                     MainNavigationBar(
-                        currentRoute = currentRoute,
+                        currentScreen = pagerState.currentPage,
+                        maxScreens = pagerState.pageCount,
                         items = navigationList,
-                        onIconClick = onNavigation
+                        onIconClick = { screen ->
+                            scope.launch {
+                                pagerState.animateScrollToPage(screen)
+                            }
+                        },
+                        onLastVisitedClick = {}
                     )
                 }
 
@@ -109,6 +129,7 @@ fun MainScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /*TODO*/ },
+                shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
@@ -121,7 +142,22 @@ fun MainScreen(
         floatingActionButtonPosition = FabPosition.End
     ) {paddingValues ->
 
-        Navigation(navController, paddingValues)
+        HorizontalPager(
+            count = screenPages.size,
+            modifier = Modifier.fillMaxSize(),
+            state = pagerState,
+            contentPadding = paddingValues
+        ) { screen ->
+
+            val currentPage = screenPages[screen]
+
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                currentPage
+            }
+        }
     }
 }
 
@@ -225,15 +261,22 @@ fun PreviewMainTopBar(){
 
 @Composable
 fun MainNavigationBar(
-    currentRoute: String?,
-    items: List<Triple<String, ImageVector, Int>>,
-    onIconClick: (String) -> Unit
+    currentScreen: Int,
+    maxScreens: Int,
+    items: List<Triple<Int, ImageVector, Int>>,
+    onIconClick: (Int) -> Unit,
+    onLastVisitedClick: () -> Unit
 ){
     NavigationBar{
         items.forEach {
             NavigationBarItem(
-                selected = currentRoute == it.first,
-                onClick = { onIconClick(it.first) },
+                selected = currentScreen == it.first,
+                onClick = {
+                    if(it.first + 1 > maxScreens)
+                        onLastVisitedClick()
+                    else
+                        onIconClick(it.first)
+                },
                 icon = {
                     Icon(imageVector = it.second, contentDescription = "Navigation icon")
                 }
@@ -242,26 +285,34 @@ fun MainNavigationBar(
     }
 }
 
-@Composable
-fun currentRoute(navController: NavHostController): String? {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    return navBackStackEntry?.destination?.route
-}
-
 @Preview
 @Composable
 fun PreviewMainNavigationBar(){
     NoteTasksTheme {
         Box(modifier = Modifier.padding(10.dp)){
             MainNavigationBar(
-                currentRoute = "notes_screen",
+                currentScreen = 0,
+                maxScreens = 4,
                 items = listOf(
-                    Triple(Screens.NotesScreen.route, Icons.Default.Notes, R.string.title_notes),
-                    Triple(Screens.ToDoScreen.route, Icons.Outlined.CheckBox, R.string.title_to_do),
-                    Triple(Screens.DoNotScreen.route, Icons.Default.CalendarToday, R.string.title_do_not),
-                    Triple("", Icons.Default.History, R.string.title_history)
+                    Triple(0, Icons.Default.Notes, R.string.title_notes),
+                    Triple(1, Icons.Outlined.CheckBox, R.string.title_to_do),
+                    Triple(2, Icons.Default.CalendarToday, R.string.title_do_not),
+                    Triple(3, Icons.Default.History, R.string.title_history)
                 ),
-                onIconClick = {}
+                onIconClick = {},
+                onLastVisitedClick = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewMainScreen(){
+    NoteTasksTheme {
+        Box(modifier = Modifier.padding(10.dp)){
+            MainScreen(
+                onSearchClick = {}
             )
         }
     }

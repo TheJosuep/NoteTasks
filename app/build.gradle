@@ -72,4 +72,7 @@ dependencies {
     //Icons
     implementation 'androidx.compose.material:material-icons-extended'
 
+    //Carousel slider
+    implementation("com.google.accompanist:accompanist-pager:0.20.0")
+
 }
