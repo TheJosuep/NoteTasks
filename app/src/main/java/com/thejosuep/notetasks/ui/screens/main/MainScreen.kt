@@ -3,8 +3,6 @@ package com.thejosuep.notetasks.ui.screens.main
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,8 +23,6 @@ import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CheckBox
 import androidx.compose.material.icons.outlined.ExpandLess
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -36,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Surface
@@ -54,13 +51,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.thejosuep.notetasks.R
-import com.thejosuep.notetasks.navigation.Screens
 import com.thejosuep.notetasks.ui.screens.dont.DoNotScreen
 import com.thejosuep.notetasks.ui.screens.notes.NotesScreen
 import com.thejosuep.notetasks.ui.screens.todo.ToDoScreen
@@ -95,7 +91,10 @@ fun MainScreen(
         topBar = {
             Column {
                 MainTopBar(
-                    title = stringResource(id = navigationList[0].third),
+                    title = stringResource(id = navigationList[pagerState.currentPage].third),
+                    pagesCount = screenPages.size,
+                    pagerState = pagerState,
+                    navigationList = navigationList,
                     isNavigationOpened = isNavigationOpened,
                     onMenuClick = {},
                     onTitleClick = { isNavigationOpened = !isNavigationOpened },
@@ -161,10 +160,66 @@ fun MainScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun TopBarTitleButton(
+    title: String,
+    pagesCount: Int,
+    pagerState: PagerState,
+    isNavigationOpened: Boolean,
+    onTitleClick: () -> Unit
+){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Surface(
+            onClick = onTitleClick,
+            modifier = Modifier
+                .size(width = 200.dp, height = 35.dp),
+            enabled = true,
+            shape = RoundedCornerShape(14.dp),
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 8.dp, horizontal = 12.dp),
+                contentAlignment = Alignment.Center
+            ){
+                HorizontalPager(
+                    count = pagesCount,
+                    modifier = Modifier.fillMaxSize(),
+                    state = pagerState
+                ) {
+                    Text(
+                        text = title,
+                        fontSize = 14.sp
+                    )
+                }
+
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.CenterEnd
+                ){
+                    Icon(
+                        imageVector = if (isNavigationOpened) Icons.Outlined.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = "Show/hide navigation icon"
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
 fun MainTopBar(
     title: String,
+    pagesCount: Int,
+    pagerState: PagerState,
+    navigationList: List<Triple<Int, ImageVector, Int>>,
     isNavigationOpened: Boolean,
     onMenuClick: () -> Unit,
     onTitleClick: () -> Unit,
@@ -173,45 +228,13 @@ fun MainTopBar(
 
     TopAppBar(
         title = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Button(
-                    onClick = { onTitleClick() },
-                    modifier = Modifier
-                        .size(width = 200.dp, height = 35.dp)
-                        .combinedClickable(
-                            onClick = {},
-                            onLongClick = { /* TODO: Extensible button */ }
-                        )
-                    ,
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = title)
-
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.CenterEnd
-                        ){
-                            Icon(
-                                imageVector = if (isNavigationOpened) Icons.Outlined.ExpandLess else Icons.Default.ExpandMore,
-                                contentDescription = "Show/hide navigation icon"
-                            )
-                        }
-                    }
-                    
-
-                }
-            }
+            TopBarTitleButton(
+                title = title,
+                pagesCount = pagesCount,
+                pagerState = pagerState,
+                isNavigationOpened = isNavigationOpened,
+                onTitleClick = onTitleClick
+            )
         },
         modifier = Modifier,
         navigationIcon = {
@@ -243,22 +266,6 @@ fun MainTopBar(
     )
 }
 
-@Preview
-@Composable
-fun PreviewMainTopBar(){
-    NoteTasksTheme {
-        Box(modifier = Modifier.padding(10.dp)){
-            MainTopBar(
-                title = "Notes",
-                isNavigationOpened = false,
-                onMenuClick = {},
-                onTitleClick = {},
-                onSearchClick = {}
-            )
-        }
-    }
-}
-
 @Composable
 fun MainNavigationBar(
     currentScreen: Int,
@@ -267,7 +274,10 @@ fun MainNavigationBar(
     onIconClick: (Int) -> Unit,
     onLastVisitedClick: () -> Unit
 ){
-    NavigationBar{
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground
+    ){
         items.forEach {
             NavigationBarItem(
                 selected = currentScreen == it.first,
@@ -279,7 +289,56 @@ fun MainNavigationBar(
                 },
                 icon = {
                     Icon(imageVector = it.second, contentDescription = "Navigation icon")
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                    unselectedIconColor = MaterialTheme.colorScheme.onBackground,
+                    unselectedTextColor = MaterialTheme.colorScheme.onBackground
+                )
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Preview
+@Composable
+fun PreviewTopBarTitleButton(){
+    NoteTasksTheme {
+        Box(modifier = Modifier.padding(10.dp)){
+            TopBarTitleButton(
+                title = "Notes",
+                pagesCount = 3,
+                pagerState = rememberPagerState(),
+                isNavigationOpened = false,
+                onTitleClick = {}
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Preview
+@Composable
+fun PreviewMainTopBar(){
+    NoteTasksTheme {
+        Box(modifier = Modifier.padding(10.dp)){
+            MainTopBar(
+                title = "Notes",
+                pagesCount = 3,
+                pagerState = rememberPagerState(),
+                navigationList = listOf(
+                    Triple(0, Icons.Default.Notes, R.string.title_notes),
+                    Triple(1, Icons.Outlined.CheckBox, R.string.title_to_do),
+                    Triple(2, Icons.Default.CalendarToday, R.string.title_do_not),
+                    Triple(3, Icons.Default.History, R.string.title_history)
+                ),
+                isNavigationOpened = false,
+                onMenuClick = {},
+                onTitleClick = {},
+                onSearchClick = {}
             )
         }
     }
