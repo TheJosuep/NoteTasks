@@ -12,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.thejosuep.notetasks.navigation.Graphs
 import com.thejosuep.notetasks.navigation.Navigation
+import com.thejosuep.notetasks.ui.screens.main.MainScreen
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +31,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation(navController)
+                    MainScreen(
+                        navController = navController,
+                        onNavigation = { string ->
+                            navController.navigate(string){
+                            }
+                        },
+                        onSearchClick = {
+                            navController.navigate(Graphs.SEARCH_GRAPH)
+                        }
+                    )
                 }
             }
         }

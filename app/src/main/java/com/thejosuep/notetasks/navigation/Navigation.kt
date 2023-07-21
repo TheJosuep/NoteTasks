@@ -1,5 +1,7 @@
 package com.thejosuep.notetasks.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
@@ -13,64 +15,64 @@ import com.thejosuep.notetasks.ui.screens.main.MainScreen
 
 @Composable
 fun Navigation(
-    navController: NavHostController
+    navController: NavHostController,
+    paddingValues: PaddingValues
 ){
     NavHost(
         navController = navController,
-        startDestination = Screens.MainScreen.route
+        startDestination = Graphs.NOTES_GRAPH
     ){
         // Main screen
         composable(route = Screens.MainScreen.route){
-            MainScreen()
+            MainScreen(
+                navController = navController,
+                onNavigation = { string ->
+                    navController.navigate(string){
+                    }
+                },
+                onSearchClick = {
+                    navController.navigate(Graphs.SEARCH_GRAPH)
+                }
+            )
         }
 
         // Notes graph
         navigation(
             startDestination = Screens.NotesScreen.route,
-            route = Graphs.NotesGraph.route
+            route = Graphs.NOTES_GRAPH
         ){
             composable(route = Screens.NotesScreen.route){
-
+                Text(text = "Notes Screen")
             }
         }
 
         // ToDo graph
         navigation(
             startDestination = Screens.ToDoScreen.route,
-            route = Graphs.ToDoGraph.route
+            route = Graphs.TO_DO_GRAPH
         ){
             composable(route = Screens.ToDoScreen.route){
-
+                Text(text = "To do Screen")
             }
         }
 
         // DoNot graph
         navigation(
             startDestination = Screens.DoNotScreen.route,
-            route = Graphs.DoNotGraph.route
+            route = Graphs.DO_NOT_GRAPH
         ){
             composable(route = Screens.DoNotScreen.route){
-
-            }
-        }
-
-        // Last visited graph
-        navigation(
-            startDestination = Screens.HistoryScreen.route,
-            route = Graphs.HistoryGraph.route
-        ){
-            composable(route = Screens.HistoryScreen.route){
-
+                Text(text = "Do not Screen")
             }
         }
 
         // Search graph
         navigation(
             startDestination = Screens.SearchScreen.route,
-            route = Graphs.SearchGraph.route
+            route = Graphs.SEARCH_GRAPH
         ){
             composable(route = Screens.SearchScreen.route){
-
+                Text(text = "Search Screen")
             }
         }
 
@@ -81,13 +83,12 @@ fun Navigation(
     }
 }
 
-sealed class Graphs(val route: String){
-    object MainGraph: Graphs("main_graph")
-    object NotesGraph: Graphs("notes_graph")
-    object ToDoGraph: Graphs("to_do_graph")
-    object DoNotGraph: Graphs("do_not_graph")
-    object HistoryGraph: Graphs("history_graph")
-    object SearchGraph: Graphs("search_graph")
+object Graphs{
+    const val MAIN_GRAPH = "main_graph"
+    const val NOTES_GRAPH = "notes_graph"
+    const val TO_DO_GRAPH = "todo_graph"
+    const val DO_NOT_GRAPH = "donot_graph"
+    const val SEARCH_GRAPH = "search_graph"
 }
 
 sealed class Screens(val route: String){
@@ -95,7 +96,6 @@ sealed class Screens(val route: String){
     object NotesScreen: Screens("notes_screen")
     object ToDoScreen: Screens("to_do_screen")
     object DoNotScreen: Screens("do_not_screen")
-    object HistoryScreen: Screens("history_screen")
     object SearchScreen: Screens("search_screen")
     object AboutScreen: Screens("about_screen")
 }

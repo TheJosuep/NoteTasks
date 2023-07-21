@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">NoteTasks</string>
+
+    // Top app bar titles
+    <string name="title_notes">Notas</string>
+    <string name="title_to_do">Tareas</string>
+    <string name="title_do_not">Límites</string>
+    <string name="title_history">Último abierto</string>
+
 </resources>
