@@ -94,7 +94,6 @@ fun MainScreen(
                     title = stringResource(id = navigationList[pagerState.currentPage].third),
                     pagesCount = screenPages.size,
                     pagerState = pagerState,
-                    navigationList = navigationList,
                     isNavigationOpened = isNavigationOpened,
                     onMenuClick = {},
                     onTitleClick = { isNavigationOpened = !isNavigationOpened },
@@ -219,7 +218,6 @@ fun MainTopBar(
     title: String,
     pagesCount: Int,
     pagerState: PagerState,
-    navigationList: List<Triple<Int, ImageVector, Int>>,
     isNavigationOpened: Boolean,
     onMenuClick: () -> Unit,
     onTitleClick: () -> Unit,
@@ -274,10 +272,7 @@ fun MainNavigationBar(
     onIconClick: (Int) -> Unit,
     onLastVisitedClick: () -> Unit
 ){
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground
-    ){
+    NavigationBar{
         items.forEach {
             NavigationBarItem(
                 selected = currentScreen == it.first,
@@ -293,9 +288,7 @@ fun MainNavigationBar(
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                    unselectedIconColor = MaterialTheme.colorScheme.onBackground,
-                    unselectedTextColor = MaterialTheme.colorScheme.onBackground
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
         }
@@ -329,17 +322,10 @@ fun PreviewMainTopBar(){
                 title = "Notes",
                 pagesCount = 3,
                 pagerState = rememberPagerState(),
-                navigationList = listOf(
-                    Triple(0, Icons.Default.Notes, R.string.title_notes),
-                    Triple(1, Icons.Outlined.CheckBox, R.string.title_to_do),
-                    Triple(2, Icons.Default.CalendarToday, R.string.title_do_not),
-                    Triple(3, Icons.Default.History, R.string.title_history)
-                ),
                 isNavigationOpened = false,
                 onMenuClick = {},
-                onTitleClick = {},
-                onSearchClick = {}
-            )
+                onTitleClick = {}
+            ) {}
         }
     }
 }
