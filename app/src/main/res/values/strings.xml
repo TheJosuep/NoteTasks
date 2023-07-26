@@ -1,10 +1,14 @@
 <resources>
-    <string name="app_name">NoteTasks</string>
+    <string name="app_name" translatable="false">Tasks</string>
 
     // Top app bar titles
-    <string name="title_notes">Notas</string>
-    <string name="title_to_do">Tareas</string>
-    <string name="title_do_not">Límites</string>
-    <string name="title_history">Último abierto</string>
+    <string name="title_notes">Notes</string>
+    <string name="title_to_do">Tasks</string>
+    <string name="title_do_not">Diets</string>
+
+    // Notes screen
+    <string name="title_history">Last opened</string>
+    <string name="placeholder_add_quick_note">Write here to add a quick note...</string>
+    <string name="placeholder_no_description">No text</string>
 
 </resources>
