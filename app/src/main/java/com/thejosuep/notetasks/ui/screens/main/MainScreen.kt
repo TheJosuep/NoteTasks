@@ -147,13 +147,11 @@ fun MainScreen(
             contentPadding = paddingValues
         ) { screen ->
 
-            val currentPage = screenPages[screen]
-
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                currentPage
+            when(screen){
+                0 -> { NotesScreen() }
+                1 -> { ToDoScreen() }
+                2 -> { DoNotScreen() }
+                else -> {}
             }
         }
     }
