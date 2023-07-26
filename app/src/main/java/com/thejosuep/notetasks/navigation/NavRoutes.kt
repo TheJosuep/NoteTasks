@@ -4,7 +4,7 @@ object Graphs{
     const val MAIN_GRAPH = "main_graph"
     const val NOTES_GRAPH = "notes_graph"
     const val TO_DO_GRAPH = "todo_graph"
-    const val DO_NOT_GRAPH = "donot_graph"
+    const val DO_NOT_GRAPH = "do_not_graph"
     const val SEARCH_GRAPH = "search_graph"
 }
 

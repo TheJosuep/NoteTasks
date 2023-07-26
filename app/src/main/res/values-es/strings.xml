@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_notes">Notas</string>
+    <string name="title_to_do">Tareas</string>
+    <string name="title_do_not">Dietas</string>
+    <string name="title_history">Último abierto</string>
+    <string name="placeholder_add_quick_note">Escribe aquí para agregar una nota...</string>
+    <string name="placeholder_no_description">Sin texto</string>
+</resources>
