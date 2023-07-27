@@ -3,18 +3,22 @@ package com.thejosuep.notetasks.ui.screens.main
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.History
@@ -22,14 +26,26 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.CheckBox
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.HelpOutline
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.LightMode
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.WarningAmber
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -39,6 +55,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +66,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,6 +88,7 @@ fun MainScreen(
 ) {
     var isNavigationOpened by remember("navigation"){ mutableStateOf(false) }
 
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
 
@@ -86,72 +105,87 @@ fun MainScreen(
         DoNotScreen()
     )
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            Column {
-                MainTopBar(
-                    title = stringResource(id = navigationList[pagerState.currentPage].third),
-                    pagesCount = screenPages.size,
-                    pagerState = pagerState,
-                    isNavigationOpened = isNavigationOpened,
-                    onMenuClick = {},
-                    onTitleClick = { isNavigationOpened = !isNavigationOpened },
-                    onSearchClick = onSearchClick
-                )
+    ModalNavigationDrawer(
+        drawerContent = {
+            SideAppBar(
+                onSettingsClick = { /*TODO*/ },
+                onTrashBinClick = { /*TODO*/ },
+                onSafeNotesClick = { /*TODO*/ },
+                onAboutClick = { /*TODO*/ },
+                onThemeClick = { /*TODO*/ },
+                onReportClick = { /*TODO*/ },
+                onHelpClick = { /*TODO*/ }
+            )
+        },
+        drawerState = drawerState
+    ){
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                Column {
+                    MainTopBar(
+                        title = stringResource(id = navigationList[pagerState.currentPage].third),
+                        pagesCount = screenPages.size,
+                        pagerState = pagerState,
+                        isNavigationOpened = isNavigationOpened,
+                        onMenuClick = { scope.launch { drawerState.open() } },
+                        onTitleClick = { isNavigationOpened = !isNavigationOpened },
+                        onSearchClick = onSearchClick
+                    )
 
-                if(isNavigationOpened)
+                    if(isNavigationOpened)
+                        Divider(modifier = Modifier.padding(horizontal = 10.dp))
+
+                    AnimatedVisibility(
+                        visible = isNavigationOpened,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
+                        MainNavigationBar(
+                            currentScreen = pagerState.currentPage,
+                            maxScreens = pagerState.pageCount,
+                            items = navigationList,
+                            onIconClick = { screen ->
+                                scope.launch {
+                                    pagerState.animateScrollToPage(screen)
+                                }
+                            },
+                            onLastVisitedClick = {}
+                        )
+                    }
+
                     Divider(modifier = Modifier.padding(horizontal = 10.dp))
-
-                AnimatedVisibility(
-                    visible = isNavigationOpened,
-                    enter = expandVertically(),
-                    exit = shrinkVertically()
+                }
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { /*TODO*/ },
+                    shape = CircleShape,
+                    containerColor = MaterialTheme.colorScheme.primary
                 ) {
-                    MainNavigationBar(
-                        currentScreen = pagerState.currentPage,
-                        maxScreens = pagerState.pageCount,
-                        items = navigationList,
-                        onIconClick = { screen ->
-                            scope.launch {
-                                pagerState.animateScrollToPage(screen)
-                            }
-                        },
-                        onLastVisitedClick = {}
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add icon",
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
+            },
+            floatingActionButtonPosition = FabPosition.End
+        ) {paddingValues ->
 
-                Divider(modifier = Modifier.padding(horizontal = 10.dp))
-            }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /*TODO*/ },
-                shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add icon",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-        },
-        floatingActionButtonPosition = FabPosition.End
-    ) {paddingValues ->
+            HorizontalPager(
+                count = screenPages.size,
+                modifier = Modifier.fillMaxSize(),
+                state = pagerState,
+                contentPadding = paddingValues
+            ) { screen ->
 
-        HorizontalPager(
-            count = screenPages.size,
-            modifier = Modifier.fillMaxSize(),
-            state = pagerState,
-            contentPadding = paddingValues
-        ) { screen ->
-
-            when(screen){
-                0 -> { NotesScreen() }
-                1 -> { ToDoScreen() }
-                2 -> { DoNotScreen() }
-                else -> {}
+                when(screen){
+                    0 -> { NotesScreen() }
+                    1 -> { ToDoScreen() }
+                    2 -> { DoNotScreen() }
+                    else -> {}
+                }
             }
         }
     }
@@ -293,6 +327,152 @@ fun MainNavigationBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SideAppBar(
+    onSettingsClick: () -> Unit,
+    onTrashBinClick: () -> Unit,
+    onSafeNotesClick: () -> Unit,
+    onAboutClick: () -> Unit,
+    onThemeClick: () -> Unit,
+    onReportClick: () -> Unit,
+    onHelpClick: () -> Unit
+){
+    ModalDrawerSheet(
+        drawerShape = RoundedCornerShape(10.dp),
+        drawerContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+        drawerContentColor = MaterialTheme.colorScheme.onSecondaryContainer
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            // App card
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .padding(horizontal = 25.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                // App logo
+                Column(
+                    Modifier
+                        .height(60.dp)
+                        .width(50.dp)
+                ){
+                    // TODO: Add NoteTasks logo
+                    Icon(imageVector = Icons.Default.Book, contentDescription = "NoteTasks icon")
+                }
+
+                // App name and version
+                Column(
+                    Modifier
+                        .height(60.dp)
+                        .width(100.dp)
+                ){
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = stringResource(id = R.string.app_version),
+                        fontSize = 10.sp
+                    )
+                }
+            }
+
+            Divider(Modifier.fillMaxWidth(0.94f))
+
+            Column(
+                modifier = Modifier.padding(vertical = 10.dp),
+            ){
+                SideBarItem(icon = Icons.Outlined.Settings, label = stringResource(id = R.string.title_settings), onClick = onSettingsClick)
+
+                SideBarItem(icon = Icons.Outlined.Delete, label = stringResource(id = R.string.title_trash_bin), onClick = onTrashBinClick)
+
+                SideBarItem(icon = Icons.Outlined.Lock, label = stringResource(id = R.string.title_safe_notes), onClick = onSafeNotesClick)
+
+                SideBarItem(icon = Icons.Outlined.Info, label = stringResource(id = R.string.title_about), onClick = onAboutClick)
+            }
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Divider(
+                    Modifier
+                        .fillMaxWidth(0.87f)
+                        .padding(end = 10.dp))
+
+                SideBarItem(
+                    icon = if(isSystemInDarkTheme()) Icons.Outlined.LightMode
+                        else Icons.Outlined.DarkMode,
+                    label = if(isSystemInDarkTheme()) stringResource(id = R.string.title_light_mode)
+                        else stringResource(id = R.string.title_dark_mode),
+                    onClick = onThemeClick
+                )
+
+                SideBarItem(icon = Icons.Outlined.WarningAmber, label = stringResource(id = R.string.title_report_problem), onClick = onReportClick)
+
+                SideBarItem(icon = Icons.Outlined.HelpOutline, label = stringResource(id = R.string.title_help), onClick = onHelpClick)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SideBarItem(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit
+){
+    Card(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp),
+        shape = RoundedCornerShape(0.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 25.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .size(40.dp, 40.dp)
+                    .padding(all = 8.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Icon(imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.onTertiaryContainer)
+            }
+
+            Column(
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(40.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = label,
+                    modifier = Modifier.padding(start = 10.dp),
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalPagerApi::class)
 @Preview
 @Composable
@@ -349,6 +529,7 @@ fun PreviewMainNavigationBar(){
     }
 }
 
+/*
 @Preview
 @Composable
 fun PreviewMainScreen(){
@@ -356,6 +537,39 @@ fun PreviewMainScreen(){
         Box(modifier = Modifier.padding(10.dp)){
             MainScreen(
                 onSearchClick = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewSideBar(){
+    NoteTasksTheme {
+        Box(modifier = Modifier.fillMaxSize()){
+            SideAppBar(
+                onSettingsClick = { /*TODO*/ },
+                onTrashBinClick = { /*TODO*/ },
+                onSafeNotesClick = { /*TODO*/ },
+                onAboutClick = { /*TODO*/ },
+                onThemeClick = { /*TODO*/ },
+                onReportClick = { /*TODO*/ },
+                onHelpClick = { /*TODO*/ }
+            )
+        }
+    }
+}
+*/
+
+@Preview
+@Composable
+fun PreviewSideBarItem(){
+    NoteTasksTheme {
+        Box(modifier = Modifier.padding(10.dp)){
+            SideBarItem(
+                icon = Icons.Outlined.Settings,
+                label = "Settings",
+                onClick = {}
             )
         }
     }

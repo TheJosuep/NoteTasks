@@ -6,4 +6,12 @@
     <string name="title_history">Último abierto</string>
     <string name="placeholder_add_quick_note">Escribe aquí para agregar una nota...</string>
     <string name="placeholder_no_description">Sin texto</string>
+    <string name="title_settings">Configuración</string>
+    <string name="title_trash_bin">Papelera</string>
+    <string name="title_safe_notes">Notas seguras</string>
+    <string name="title_about">Sobre NoteTasks</string>
+    <string name="title_dark_mode">Modo oscuro</string>
+    <string name="title_light_mode">Modo claro</string>
+    <string name="title_report_problem">Reportar un problema</string>
+    <string name="title_help">Ayuda</string>
 </resources>
