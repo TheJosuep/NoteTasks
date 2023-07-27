@@ -360,42 +360,7 @@ fun SideAppBar(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             // App card
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .padding(horizontal = 25.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                // App logo
-                Column(
-                    Modifier
-                        .height(60.dp)
-                        .width(50.dp)
-                ){
-                    // TODO: Add NoteTasks logo
-                    Icon(imageVector = Icons.Default.Book, contentDescription = "NoteTasks icon")
-                }
-
-                // App name and version
-                Column(
-                    Modifier
-                        .height(60.dp)
-                        .width(100.dp)
-                ){
-                    Text(
-                        text = stringResource(id = R.string.app_name),
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = stringResource(id = R.string.app_version),
-                        fontSize = 10.sp
-                    )
-                }
-            }
+            AppCard()
 
             Divider(Modifier.fillMaxWidth(0.94f))
 
@@ -419,7 +384,8 @@ fun SideAppBar(
                 Divider(
                     Modifier
                         .fillMaxWidth(0.87f)
-                        .padding(end = 10.dp))
+                        .padding(bottom = 10.dp)
+                )
 
                 SideBarItem(
                     icon = if(isSystemInDarkTheme()) Icons.Outlined.LightMode
@@ -433,6 +399,52 @@ fun SideAppBar(
 
                 SideBarItem(icon = Icons.Outlined.HelpOutline, label = stringResource(id = R.string.title_help), onClick = onHelpClick)
             }
+        }
+    }
+}
+
+@Composable
+fun AppCard(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .padding(horizontal = 25.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        // App logo
+        Column(
+            modifier = Modifier
+                .height(60.dp)
+                .width(50.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            // TODO: Add NoteTasks logo
+            Icon(
+                imageVector = Icons.Default.Book,
+                contentDescription = "NoteTasks icon",
+                modifier = Modifier.size(32.dp)
+            )
+        }
+
+        // App name and version
+        Column(
+            Modifier
+                .height(60.dp)
+                .width(100.dp),
+            verticalArrangement = Arrangement.Center
+        ){
+            Text(
+                text = stringResource(id = R.string.app_name),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = stringResource(id = R.string.app_version),
+                fontSize = 10.sp
+            )
         }
     }
 }
@@ -557,6 +569,7 @@ fun PreviewMainScreen(){
         }
     }
 }
+*/
 
 @Preview
 @Composable
@@ -575,7 +588,16 @@ fun PreviewSideBar(){
         }
     }
 }
-*/
+
+@Preview
+@Composable
+fun PreviewAppCard(){
+    NoteTasksTheme {
+        Box(modifier = Modifier.padding(10.dp)){
+            AppCard()
+        }
+    }
+}
 
 @Preview
 @Composable
