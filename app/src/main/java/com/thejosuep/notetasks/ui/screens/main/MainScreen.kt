@@ -36,6 +36,7 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -84,7 +85,14 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onTrashBinClick: () -> Unit,
+    onSafeNotesClick: () -> Unit,
+    onAboutClick: () -> Unit,
+    onThemeClick: () -> Unit,
+    onReportClick: () -> Unit,
+    onHelpClick: () -> Unit
 ) {
     var isNavigationOpened by remember("navigation"){ mutableStateOf(false) }
 
@@ -93,32 +101,36 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
 
     val navigationList = listOf(
+        // Structure: Number in the navigation bar, icon and screen's title
         Triple(0, Icons.Default.Notes, R.string.title_notes),
         Triple(1, Icons.Outlined.CheckBox, R.string.title_to_do),
         Triple(2, Icons.Default.CalendarToday, R.string.title_do_not),
         Triple(3, Icons.Default.History, R.string.title_history)
     )
 
+    // Screens count
     val screenPages = listOf(
         NotesScreen(),
         ToDoScreen(),
         DoNotScreen()
     )
 
+    // Side bar component
     ModalNavigationDrawer(
         drawerContent = {
             SideAppBar(
-                onSettingsClick = { /*TODO*/ },
-                onTrashBinClick = { /*TODO*/ },
-                onSafeNotesClick = { /*TODO*/ },
-                onAboutClick = { /*TODO*/ },
-                onThemeClick = { /*TODO*/ },
-                onReportClick = { /*TODO*/ },
-                onHelpClick = { /*TODO*/ }
+                onSettingsClick = onSettingsClick,
+                onTrashBinClick = onTrashBinClick,
+                onSafeNotesClick = onSafeNotesClick,
+                onAboutClick = onAboutClick,
+                onThemeClick = onThemeClick,
+                onReportClick = onReportClick,
+                onHelpClick = onHelpClick
             )
         },
         drawerState = drawerState
     ){
+        // Main screen content
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -437,7 +449,11 @@ fun SideBarItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
-        shape = RoundedCornerShape(0.dp)
+        shape = RoundedCornerShape(0.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+        )
     ) {
         Row(
             modifier = Modifier

@@ -25,7 +25,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavigation()
+                    AppNavigation(
+                        onThemeClick = {
+                            /* TODO: Change theme */
+                        }
+                    )
                 }
             }
         }

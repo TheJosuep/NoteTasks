@@ -15,7 +15,8 @@ import com.thejosuep.notetasks.ui.screens.main.MainScreen
 
 @Composable
 fun AppNavigation(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    onThemeClick: () -> Unit
 ){
     NavHost(
         navController = navController,
@@ -30,7 +31,14 @@ fun AppNavigation(
                 MainScreen(
                     onSearchClick = {
                         navController.navigate(Graphs.SEARCH_GRAPH)
-                    }
+                    },
+                    onSettingsClick = { /*TODO*/ },
+                    onTrashBinClick = { /*TODO*/ },
+                    onSafeNotesClick = { /*TODO*/ },
+                    onAboutClick = { /*TODO*/ },
+                    onThemeClick = onThemeClick,
+                    onReportClick = { /*TODO*/ },
+                    onHelpClick = { /*TODO*/ }
                 )
             }
         }
