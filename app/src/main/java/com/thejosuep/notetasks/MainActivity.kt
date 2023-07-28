@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.thejosuep.notetasks.navigation.AppNavigation
-import com.thejosuep.notetasks.navigation.Graphs
-import com.thejosuep.notetasks.ui.screens.main.MainScreen
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -12,7 +12,7 @@ private const val PREFERENCES_NAME = "preferences_name"
 private val Context.dataStore by preferencesDataStore(name = PREFERENCES_NAME)
 
 // Preferences' implementation
-class PreferencesImp @Inject constructor(
+class PreferencesImpl @Inject constructor(
     private val context: Context
 ): Preferences {
     override suspend fun putDarkThemeValue(key: String, value: Boolean) {
