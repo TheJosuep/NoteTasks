@@ -7,27 +7,36 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.thejosuep.notetasks.navigation.AppNavigation
-import com.thejosuep.notetasks.navigation.Graphs
-import com.thejosuep.notetasks.ui.screens.main.MainScreen
+import com.thejosuep.notetasks.ui.UiEvent
+import com.thejosuep.notetasks.ui.screens.main.MainViewModel
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            NoteTasksTheme {
+
+            val viewModel = hiltViewModel<MainViewModel>()
+            val darkThemeState = viewModel.state.darkThemeValue
+
+            NoteTasksTheme(
+                darkTheme = darkThemeState
+            ) {
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     AppNavigation(
+                        darkTheme = darkThemeState,
                         onThemeClick = {
-                            /* TODO: Change theme */
+                            viewModel.onUiEvent(UiEvent.SelectedDarkThemeValue(!darkThemeState))
+                            viewModel.onUiEvent(UiEvent.SaveDarkThemeValue(!darkThemeState))
                         }
                     )
                 }

@@ -16,6 +16,7 @@ import com.thejosuep.notetasks.ui.screens.main.MainScreen
 @Composable
 fun AppNavigation(
     navController: NavHostController = rememberNavController(),
+    darkTheme: Boolean,
     onThemeClick: () -> Unit
 ){
     NavHost(
@@ -29,6 +30,7 @@ fun AppNavigation(
         ){
             composable(route = Screens.MainScreen.route){
                 MainScreen(
+                    darkTheme = darkTheme,
                     onSearchClick = {
                         navController.navigate(Graphs.SEARCH_GRAPH)
                     },
