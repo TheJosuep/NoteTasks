@@ -24,7 +24,7 @@ class MainViewModel @Inject constructor(
         private set
 
     init {
-
+        getDarkTheme()
     }
 
     fun onUiEvent(e: UiEvent){

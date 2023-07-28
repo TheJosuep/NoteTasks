@@ -3,7 +3,6 @@ package com.thejosuep.notetasks.ui.screens.main
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -85,6 +84,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
+    darkTheme: Boolean,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onTrashBinClick: () -> Unit,
@@ -119,6 +119,7 @@ fun MainScreen(
     ModalNavigationDrawer(
         drawerContent = {
             SideAppBar(
+                darkThemeEnabled = darkTheme,
                 onSettingsClick = onSettingsClick,
                 onTrashBinClick = onTrashBinClick,
                 onSafeNotesClick = onSafeNotesClick,
@@ -342,6 +343,7 @@ fun MainNavigationBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SideAppBar(
+    darkThemeEnabled: Boolean,
     onSettingsClick: () -> Unit,
     onTrashBinClick: () -> Unit,
     onSafeNotesClick: () -> Unit,
@@ -351,7 +353,7 @@ fun SideAppBar(
     onHelpClick: () -> Unit
 ){
     ModalDrawerSheet(
-        drawerShape = RoundedCornerShape(10.dp),
+        drawerShape = RoundedCornerShape(topStart = 0.dp, topEnd = 10.dp, bottomEnd = 0.dp, bottomStart = 10.dp),
         drawerContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
         drawerContentColor = MaterialTheme.colorScheme.onSecondaryContainer
     ) {
@@ -362,7 +364,10 @@ fun SideAppBar(
             // App card
             AppCard()
 
-            Divider(Modifier.fillMaxWidth(0.94f))
+            Divider(
+                Modifier.fillMaxWidth(0.94f),
+                color = MaterialTheme.colorScheme.outline
+            )
 
             Column(
                 modifier = Modifier.padding(vertical = 10.dp),
@@ -384,13 +389,14 @@ fun SideAppBar(
                 Divider(
                     Modifier
                         .fillMaxWidth(0.87f)
-                        .padding(bottom = 10.dp)
+                        .padding(bottom = 10.dp),
+                    color = MaterialTheme.colorScheme.outline
                 )
 
                 SideBarItem(
-                    icon = if(isSystemInDarkTheme()) Icons.Outlined.LightMode
+                    icon = if(darkThemeEnabled) Icons.Outlined.LightMode
                         else Icons.Outlined.DarkMode,
-                    label = if(isSystemInDarkTheme()) stringResource(id = R.string.title_light_mode)
+                    label = if(darkThemeEnabled) stringResource(id = R.string.title_light_mode)
                         else stringResource(id = R.string.title_dark_mode),
                     onClick = onThemeClick
                 )
@@ -577,6 +583,7 @@ fun PreviewSideBar(){
     NoteTasksTheme {
         Box(modifier = Modifier.fillMaxSize()){
             SideAppBar(
+                darkThemeEnabled = false,
                 onSettingsClick = { /*TODO*/ },
                 onTrashBinClick = { /*TODO*/ },
                 onSafeNotesClick = { /*TODO*/ },
