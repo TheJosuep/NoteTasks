@@ -31,7 +31,7 @@ import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
 fun NoteCard(
     noteID: Int,
     title: String?,
-    description: String?,
+    description: String,
     date: String,
     onCardClick: (Int) -> Unit,
     onMoreClick: () -> Unit
@@ -63,7 +63,7 @@ fun NoteCard(
 
                     // If the title doesn't exist, gets the first line of the description
                     Text(
-                        text = if (!title.isNullOrEmpty()) title else getTitleFromDescription(description?:"Error"),
+                        text = if (!title.isNullOrEmpty()) title else getTitleFromDescription(description),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         overflow = TextOverflow.Ellipsis,
@@ -78,7 +78,7 @@ fun NoteCard(
 
                     // Show the description if exists
                     Text(
-                        text = description?: stringResource(R.string.placeholder_no_description),
+                        text = if(title.isNullOrEmpty()) stringResource(id = R.string.placeholder_no_description) else description,
                         fontSize = 14.sp,
                         lineHeight = 15.sp,
                         overflow = TextOverflow.Ellipsis,

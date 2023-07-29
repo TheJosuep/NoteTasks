@@ -1,4 +1,4 @@
-package com.thejosuep.notetasks.domain
+package com.thejosuep.notetasks.domain.notes
 
 import com.thejosuep.notetasks.data.NotesRepository
 import com.thejosuep.notetasks.domain.model.Note

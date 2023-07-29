@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface NotesDao {
 
     @Query("SELECT * FROM notes ORDER BY date DESC")
-    suspend fun getAllNotes(): Flow<List<NoteEntity>>
+    fun getAllNotes(): Flow<List<NoteEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(note: NoteEntity)

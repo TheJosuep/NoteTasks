@@ -31,6 +31,14 @@ fun AppNavigation(
             composable(route = Screens.MainScreen.route){
                 MainScreen(
                     darkTheme = darkTheme,
+                    onCreateNoteClick = { /*TODO*/ },
+                    onCreateTaskClick = { /*TODO*/ },
+                    onCreateDietClick = { /*TODO*/ },
+                    onNoteClick = { id ->
+                        id
+                    },
+                    onTaskClick = { /*TODO*/ },
+                    onDietClick = { /*TODO*/ },
                     onSearchClick = {
                         navController.navigate(Graphs.SEARCH_GRAPH)
                     },
