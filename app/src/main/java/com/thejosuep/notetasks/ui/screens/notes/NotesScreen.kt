@@ -62,7 +62,7 @@ fun NotesScreen(
 
             items(items = pagingNotes){ note ->
 
-                val date = DateFormat.getDateInstance().format(note.date)
+                val date = DateFormat.getDateTimeInstance().format(note.date)
 
                 Spacer(modifier = Modifier.height(15.dp))
 

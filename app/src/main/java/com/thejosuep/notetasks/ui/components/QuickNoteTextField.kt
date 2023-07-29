@@ -1,5 +1,6 @@
 package com.thejosuep.notetasks.ui.components
 
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,8 +49,8 @@ fun QuickNoteTextField(
             .height(IntrinsicSize.Min),
         placeholder = { Text(text = stringResource(id = R.string.placeholder_add_quick_note)) },
         trailingIcon = {
-            // Send quick note icon shows if text is not empty
-            if (text.isNotEmpty()){
+            // Send quick note icon shows if text has at least one non-whitespace character
+            if (text.isNotBlank()){
                 IconButton(
                     onClick = {
                         onSendQuickNote(text)

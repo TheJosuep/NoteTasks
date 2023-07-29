@@ -28,7 +28,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    suspend fun getAllNotes(): Flow<List<Note>> = getNotesUseCase()
+    private suspend fun getAllNotes(): Flow<List<Note>> = getNotesUseCase()
 
     suspend fun addNote(note: Note){
         addNoteUseCase(note)

@@ -1,5 +1,13 @@
 package com.thejosuep.notetasks.ui.components
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,15 +24,21 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thejosuep.notetasks.R
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
+import com.thejosuep.notetasks.utils.scaleOnPress
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,17 +50,24 @@ fun NoteCard(
     onCardClick: (Int) -> Unit,
     onMoreClick: () -> Unit
 ){
+    val interactionSource = remember{ MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsDraggedAsState()
+    // TODO: Select pressed note
+
     Card(
         onClick = {
             // Returns note ID
             onCardClick(noteID)
         },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .scaleOnPress(interactionSource),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-        )
+        ),
+        interactionSource = interactionSource
     ) {
         Row(Modifier.fillMaxWidth()){
 
@@ -99,7 +120,7 @@ fun NoteCard(
                 }
             }
 
-            // Icons side
+            // Side icons
             Column(
                 Modifier
                     .fillMaxWidth()
