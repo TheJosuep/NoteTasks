@@ -1,7 +1,7 @@
 package com.thejosuep.notetasks.data.repository
 
 import com.thejosuep.notetasks.data.source.preferences.Preferences
-import com.thejosuep.notetasks.domain.Repository
+import com.thejosuep.notetasks.domain.model.Repository
 import javax.inject.Inject
 
 // Repository's implementation
@@ -15,5 +15,4 @@ class RepositoryImpl @Inject constructor(
     override suspend fun getDarkThemeValue(key: String): Boolean? {
         return preferences.getDarkThemeValue(key)
     }
-
 }

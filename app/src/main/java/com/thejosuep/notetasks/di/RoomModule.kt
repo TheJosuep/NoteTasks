@@ -2,7 +2,7 @@ package com.thejosuep.notetasks.di
 
 import android.content.Context
 import androidx.room.Room
-import com.thejosuep.notetasks.data.database.NoteDatabase
+import com.thejosuep.notetasks.data.database.NotesDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,12 +22,12 @@ object RoomModule {
     fun provideRoom(@ApplicationContext app: Context) =
         Room.databaseBuilder(
             context = app,
-            klass = NoteDatabase::class.java,
+            klass = NotesDatabase::class.java,
             name = QUOTE_DATABASE_NAME
         ).build()
 
     // Injects Dao
     @Singleton
     @Provides
-    fun provideNotesDao(db: NoteDatabase) = db.getNoteDao()
+    fun provideNotesDao(db: NotesDatabase) = db.getNoteDao()
 }
