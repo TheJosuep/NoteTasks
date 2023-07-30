@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thejosuep.notetasks.domain.model.Note
-import com.thejosuep.notetasks.ui.components.NoteCard
+import com.thejosuep.notetasks.ui.components.NoteItem
 import com.thejosuep.notetasks.ui.components.QuickNoteTextField
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
 import kotlinx.coroutines.launch
@@ -45,6 +45,7 @@ fun NotesScreen(
             state = lazyListState,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
+            // Quick note text field
             item{
                 Spacer(Modifier.height(13.dp))
 
@@ -60,13 +61,14 @@ fun NotesScreen(
                 )
             }
 
+            // Notes
             items(items = pagingNotes){ note ->
 
                 val date = DateFormat.getDateTimeInstance().format(note.date)
 
                 Spacer(modifier = Modifier.height(15.dp))
 
-                NoteCard(
+                NoteItem(
                     noteID = note.id,
                     title = note.title,
                     description = note.description,
@@ -74,7 +76,16 @@ fun NotesScreen(
                     onCardClick = { id ->
                         onNoteClick(id)
                     },
-                    onMoreClick = {}
+                    onPin = {
+                        /* TODO: Pin note */
+                    },
+                    onDelete = {
+                        scope.launch {
+                            viewModel.deleteNote(
+                                Note(id = note.id, title = note.title, description = note.description, date = note.date)
+                            )
+                        }
+                    }
                 )
             }
         }

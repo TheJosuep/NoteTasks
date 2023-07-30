@@ -11,6 +11,8 @@
     <string name="title_history">Last opened</string>
     <string name="placeholder_add_quick_note">Write here to add a quick note...</string>
     <string name="placeholder_no_description">No text</string>
+    <string name="menu_delete_note">Delete</string>
+    <string name="menu_pin_note">Pin</string>
 
     // Side bar labels
     <string name="title_settings">Settings</string>
