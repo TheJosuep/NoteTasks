@@ -1,5 +1,8 @@
 package com.thejosuep.notetasks.data
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.thejosuep.notetasks.data.database.dao.NotesDao
 import com.thejosuep.notetasks.data.database.entities.NoteEntity
 import kotlinx.coroutines.flow.Flow
@@ -9,8 +12,12 @@ class NotesRepository @Inject constructor(
     private val notesDao: NotesDao
 ) {
 
-    suspend fun getAllNotesFromDatabase(): Flow<List<NoteEntity>> {
-        return notesDao.getAllNotes()
+    fun getAllNotesFromDatabase(): Flow<PagingData<NoteEntity>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10, prefetchDistance = 3)
+        ){
+            notesDao.getAllNotes()
+        }.flow
     }
 
     suspend fun insertNote(note: NoteEntity){

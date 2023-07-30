@@ -1,5 +1,6 @@
 package com.thejosuep.notetasks.data.database.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface NotesDao {
 
     @Query("SELECT * FROM notes ORDER BY date DESC")
-    fun getAllNotes(): Flow<List<NoteEntity>>
+    fun getAllNotes(): PagingSource<Int, NoteEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(note: NoteEntity)

@@ -9,6 +9,5 @@ data class Note(
     val date: Long = System.currentTimeMillis()
 )
 
-// Converts a note entity to a note
-fun NoteEntity.toNote() = Note(id, title, description, date)
+// Converts a note to an entity
 fun Note.toEntity() = NoteEntity(id, title, description, date)

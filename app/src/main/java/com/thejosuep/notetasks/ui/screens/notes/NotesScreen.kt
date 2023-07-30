@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.thejosuep.notetasks.domain.model.Note
 import com.thejosuep.notetasks.ui.components.NoteItem
 import com.thejosuep.notetasks.ui.components.QuickNoteTextField
@@ -32,8 +33,7 @@ fun NotesScreen(
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
-    val pagingNotesState = viewModel.notes!!.collectAsStateWithLifecycle(initialValue = emptyList())
-    val pagingNotes = pagingNotesState.value
+    val pagingNotes = viewModel.notes!!.collectAsLazyPagingItems()
     
     Column(
         modifier = Modifier
@@ -62,31 +62,35 @@ fun NotesScreen(
             }
 
             // Notes
-            items(items = pagingNotes){ note ->
+            items(count = pagingNotes.itemCount){ index ->
 
-                val date = DateFormat.getDateTimeInstance().format(note.date)
+                val note = pagingNotes[index]
 
-                Spacer(modifier = Modifier.height(15.dp))
+                if(note != null) {
+                    val date = DateFormat.getDateTimeInstance().format(note.date)
 
-                NoteItem(
-                    noteID = note.id,
-                    title = note.title,
-                    description = note.description,
-                    date = date,
-                    onCardClick = { id ->
-                        onNoteClick(id)
-                    },
-                    onPin = {
-                        /* TODO: Pin note */
-                    },
-                    onDelete = {
-                        scope.launch {
-                            viewModel.deleteNote(
-                                Note(id = note.id, title = note.title, description = note.description, date = note.date)
-                            )
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    NoteItem(
+                        noteID = note.id,
+                        title = note.title,
+                        description = note.description,
+                        date = date,
+                        onCardClick = { id ->
+                            onNoteClick(id)
+                        },
+                        onPin = {
+                            /* TODO: Pin note */
+                        },
+                        onDelete = {
+                            scope.launch {
+                                viewModel.deleteNote(
+                                    Note(id = note.id, title = note.title, description = note.description, date = note.date)
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }
