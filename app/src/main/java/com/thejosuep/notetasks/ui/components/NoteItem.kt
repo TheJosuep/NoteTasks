@@ -1,13 +1,17 @@
 package com.thejosuep.notetasks.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import com.thejosuep.notetasks.R
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
 import com.thejosuep.notetasks.utils.scaleOnPress
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,129 +58,141 @@ fun NoteItem(
     onPin: () -> Unit,
     onDelete: () -> Unit
 ){
+    val scope = rememberCoroutineScope()
     val interactionSource = remember{ MutableInteractionSource() }
     val isPressed by interactionSource.collectIsDraggedAsState()
     // TODO: Select pressed note
 
+    val noteVisible = remember{ MutableTransitionState(true) }
     var menuExpanded by remember{ mutableStateOf(false) }
 
-    Box {
-        Card(
-            onClick = {
-                // Returns note ID
-                onCardClick(noteID)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .scaleOnPress(interactionSource),
-            shape = RoundedCornerShape(8.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
-            ),
-            interactionSource = interactionSource
-        ) {
-            Row(Modifier.fillMaxWidth()){
-
-                // Text side
-                Column(
-                    Modifier
-                        .fillMaxWidth(0.87f)
-                        .padding(horizontal = 10.dp, vertical = 12.dp)
-                ) {
-                    // Title
-                    Row(modifier = Modifier
-                        .padding(start = 10.dp)
-                        .padding(vertical = 4.dp)){
-
-                        // If the title doesn't exist, gets the first line of the description
-                        Text(
-                            text = if (!title.isNullOrEmpty()) title else getTitleFromDescription(description),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-
-                    // Description
-                    Row(modifier = Modifier
-                        .padding(start = 10.dp)
-                        .padding(vertical = 4.dp)){
-
-                        // Show the description if exists
-                        Text(
-                            text = if(title.isNullOrEmpty()) stringResource(id = R.string.placeholder_no_description) else description,
-                            fontSize = 14.sp,
-                            lineHeight = 15.sp,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 2
-                        )
-                    }
-
-                    // Date
-                    Row(modifier = Modifier
-                        .padding(start = 10.dp)
-                        .padding(vertical = 4.dp)){
-
-                        // If the title doesn't exist, gets the first line of the description
-                        Text(
-                            text = date,
-                            fontSize = 12.sp
-                        )
-                    }
-                }
-
-                // Side icons
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp, vertical = 10.dp)
-                ){
-                    IconButton(
-                        onClick = {
-                            menuExpanded = !menuExpanded
-                        }
+    AnimatedVisibility(
+        visibleState = noteVisible,
+        exit = fadeOut( spring() )
+    ) {
+        Box {
+            Card(
+                onClick = {
+                    // Returns note ID
+                    onCardClick(noteID)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .scaleOnPress(interactionSource),
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                ),
+                interactionSource = interactionSource
+            ) {
+                Row {
+                    // Text side
+                    Column(
+                        Modifier
+                            .fillMaxWidth(0.9f)
+                            .padding(horizontal = 10.dp, vertical = 14.dp)
                     ) {
-                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More vert icon")
+                        NoteCardContent(title = title, description = description, date = date)
                     }
 
-                    // TODO: Pin note icon
+                    // Side icons
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 6.dp)
+                    ){
+                        IconButton(
+                            onClick = {
+                                menuExpanded = !menuExpanded
+                            }
+                        ) {
+                            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More vert icon")
+                        }
+
+                        // TODO: Pin note icon
+                    }
+                }
+            }
+
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentSize(Alignment.CenterEnd)
+            ){
+                DropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false })
+                {
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = stringResource(id = R.string.menu_pin_note))
+                        },
+                        onClick = {
+                            onPin()
+                            menuExpanded = false
+                        }
+                    )
+
+                    Divider()
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = stringResource(id = R.string.menu_delete_note))
+                        },
+                        onClick = {
+                            noteVisible.targetState = false
+                            scope.launch {
+                                delay(250)
+                                onDelete()
+                            }
+                            menuExpanded = false
+                        }
+                    )
                 }
             }
         }
+    }
+}
 
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.CenterEnd)
-        ){
-            DropdownMenu(
-                expanded = menuExpanded,
-                onDismissRequest = { menuExpanded = false })
-            {
-                DropdownMenuItem(
-                    text = {
-                        Text(text = stringResource(id = R.string.menu_pin_note))
-                    },
-                    onClick = {
-                        onPin()
-                        menuExpanded = false
-                    }
-                )
+@Composable
+fun NoteCardContent(
+    title: String?,
+    description: String,
+    date: String
+) {
+    Column(modifier = Modifier
+        .padding(start = 10.dp)
+    ){
+        // Title
+        // If the title doesn't exist, gets the first line of the description
+        Text(
+            text = if (!title.isNullOrEmpty()) title else getTitleFromDescription(description),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
+        )
 
-                Divider()
+        Spacer(modifier = Modifier.height(8.dp))
 
-                DropdownMenuItem(
-                    text = {
-                        Text(text = stringResource(id = R.string.menu_delete_note))
-                    },
-                    onClick = {
-                        onDelete()
-                        menuExpanded = false
-                    }
-                )
-            }
-        }
+        // Description
+        // Show the description if exists
+        Text(
+            text = if(title.isNullOrEmpty()) stringResource(id = R.string.placeholder_no_description) else description,
+            fontSize = 14.sp,
+            lineHeight = 15.sp,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 2
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Date
+        // If the title doesn't exist, gets the first line of the description
+        Text(
+            text = date,
+            fontSize = 12.sp
+        )
     }
 }
 
@@ -198,8 +217,7 @@ fun PreviewNoteCard() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp),
-            horizontalArrangement = Arrangement.Center
+                .padding(vertical = 10.dp)
         ) {
             NoteItem(
                 noteID = 0,

@@ -7,23 +7,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.thejosuep.notetasks.domain.model.Note
 import com.thejosuep.notetasks.ui.components.NoteItem
 import com.thejosuep.notetasks.ui.components.QuickNoteTextField
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
 import kotlinx.coroutines.launch
-import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 @Composable
 fun NotesScreen(
@@ -62,35 +63,44 @@ fun NotesScreen(
             }
 
             // Notes
-            items(count = pagingNotes.itemCount){ index ->
-
-                val note = pagingNotes[index]
-
-                if(note != null) {
-                    val date = DateFormat.getDateTimeInstance().format(note.date)
-
-                    Spacer(modifier = Modifier.height(15.dp))
-
-                    NoteItem(
-                        noteID = note.id,
-                        title = note.title,
-                        description = note.description,
-                        date = date,
-                        onCardClick = { id ->
-                            onNoteClick(id)
-                        },
-                        onPin = {
-                            /* TODO: Pin note */
-                        },
-                        onDelete = {
-                            scope.launch {
-                                viewModel.deleteNote(
-                                    Note(id = note.id, title = note.title, description = note.description, date = note.date)
-                                )
-                            }
-                        }
-                    )
+            items(
+                count = pagingNotes.itemCount,
+                key = pagingNotes.itemKey{ note ->
+                    note.id
                 }
+            ){ index ->
+
+                // Remembered for better performance
+                // Derived state optimizes conversions from non-composable type elements to composable types
+                val item = remember{ derivedStateOf { pagingNotes[index] } }
+                val note = remember{ Note(
+                    id = item.value!!.id,
+                    title = item.value?.title,
+                    description = item.value!!.description,
+                    date = item.value!!.date
+                ) }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                NoteItem(
+                    noteID = note.id,
+                    title =  note.title,
+                    description = note.description,
+                    date = SimpleDateFormat.getDateTimeInstance(2, 2).format(note.date),
+                    onCardClick = { id ->
+                        onNoteClick(id)
+                    },
+                    onPin = {
+                        /* TODO: Pin note */
+                    },
+                    onDelete = {
+                        scope.launch {
+                            viewModel.deleteNote(
+                                Note(id = note.id, title = note.title, description = note.description, date = note.date)
+                            )
+                        }
+                    }
+                )
             }
         }
     }

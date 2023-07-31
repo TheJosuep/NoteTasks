@@ -28,6 +28,7 @@ class NotesViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            // Convert notes entities to notes (data class) and save its value
             notes = getAllNotes().map { pagingData ->
                 pagingData.map { noteEntity ->
                     Note(
@@ -41,7 +42,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAllNotes(): Flow<PagingData<NoteEntity>> = getNotesUseCase()
+    private fun getAllNotes(): Flow<PagingData<NoteEntity>> = getNotesUseCase()
 
     suspend fun addNote(note: Note){
         addNoteUseCase(note)
