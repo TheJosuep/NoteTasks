@@ -54,7 +54,7 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -81,7 +81,7 @@ import com.thejosuep.notetasks.ui.screens.todo.ToDoScreen
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
     darkTheme: Boolean,
@@ -216,7 +216,7 @@ fun MainScreen(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TopBarTitleButton(
     title: String,
@@ -315,9 +315,7 @@ fun MainTopBar(
                 )
             }
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+        colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
     )
 }
 
@@ -352,7 +350,6 @@ fun MainNavigationBar(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SideAppBar(
     darkThemeEnabled: Boolean,
