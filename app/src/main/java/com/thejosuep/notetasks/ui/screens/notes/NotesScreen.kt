@@ -2,43 +2,40 @@ package com.thejosuep.notetasks.ui.screens.notes
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.thejosuep.notetasks.R
-import com.thejosuep.notetasks.ui.components.NoteCard
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
+import com.thejosuep.notetasks.domain.model.Note
+import com.thejosuep.notetasks.ui.components.NoteItem
+import com.thejosuep.notetasks.ui.components.QuickNoteTextField
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 @Composable
-fun NotesScreen(){
-
+fun NotesScreen(
+    viewModel: NotesViewModel = hiltViewModel(),
+    onNoteClick: (Int) -> Unit
+){
     val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
 
+    val pagingNotes = viewModel.notes!!.collectAsLazyPagingItems()
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,66 +46,62 @@ fun NotesScreen(){
             state = lazyListState,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
+            // Quick note text field
             item{
                 Spacer(Modifier.height(13.dp))
 
-                QuickNoteField()
-            }
-            item {
-                for( i in 0 .. 3 ){
-                    Spacer(Modifier.height(15.dp))
+                QuickNoteTextField(
+                    onSendQuickNote = { description ->
 
-                    NoteCard(
-                        noteID = i,
-                        title = "Example title",
-                        description = "This a sample description. This a sample description. This a sample description. This a sample description. ",
-                        date = "July, 15th",
-                        onCardClick = {},
-                        onMoreClick = {}
-                    )
-                }
-            }
-        }
-    }
-}
+                        val note = Note(title = null, description = description)
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun QuickNoteField(){
-
-    var text by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        value = text,
-        onValueChange = { text = it },
-        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
-        placeholder = { Text(text = stringResource(id = R.string.placeholder_add_quick_note)) },
-        trailingIcon = {
-            if (text.isNotEmpty()){
-                IconButton(
-                    onClick = {
-                        text = ""
-                        /* TODO: Send note as description */
+                        scope.launch {
+                            viewModel.addNote(note)
+                        }
                     }
-                ) {
-                    Icon(imageVector = Icons.Filled.Send, contentDescription = "Send note icon")
-                }
+                )
             }
-        },
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Sentences
-        ),
-        maxLines = 2,
-        shape = RoundedCornerShape(12.dp)
-    )
-}
 
-@Preview
-@Composable
-fun PreviewAddNoteField() {
-    NoteTasksTheme {
-        Box(modifier = Modifier.padding(10.dp)) {
-            QuickNoteField()
+            // Notes
+            items(
+                count = pagingNotes.itemCount,
+                key = pagingNotes.itemKey{ note ->
+                    note.id
+                }
+            ){ index ->
+
+                // Remembered for better performance
+                // Derived state optimizes conversions from non-composable type elements to composable types
+                val item = remember{ derivedStateOf { pagingNotes[index] } }
+                val note = remember{ Note(
+                    id = item.value!!.id,
+                    title = item.value?.title,
+                    description = item.value!!.description,
+                    date = item.value!!.date
+                ) }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                NoteItem(
+                    noteID = note.id,
+                    title =  note.title,
+                    description = note.description,
+                    date = SimpleDateFormat.getDateTimeInstance(2, 2).format(note.date),
+                    onCardClick = { id ->
+                        onNoteClick(id)
+                    },
+                    onPin = {
+                        /* TODO: Pin note */
+                    },
+                    onDelete = {
+                        scope.launch {
+                            viewModel.deleteNote(
+                                Note(id = note.id, title = note.title, description = note.description, date = note.date)
+                            )
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -118,7 +111,9 @@ fun PreviewAddNoteField() {
 fun PreviewNotesScreen(){
     NoteTasksTheme {
         Box(modifier = Modifier.fillMaxSize()) {
-            NotesScreen()
+            NotesScreen(
+                onNoteClick = {}
+            )
         }
     }
 }

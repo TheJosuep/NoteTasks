@@ -14,4 +14,6 @@
     <string name="title_light_mode">Modo claro</string>
     <string name="title_report_problem">Reportar un problema</string>
     <string name="title_help">Ayuda</string>
+    <string name="menu_delete_note">Eliminar</string>
+    <string name="menu_pin_note">Fijar</string>
 </resources>

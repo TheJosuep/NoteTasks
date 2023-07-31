@@ -1,4 +1,4 @@
-package com.thejosuep.notetasks.domain
+package com.thejosuep.notetasks.domain.model
 
 interface Repository {
 

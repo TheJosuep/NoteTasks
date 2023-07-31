@@ -85,6 +85,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(
     darkTheme: Boolean,
+    onCreateNoteClick: () -> Unit,
+    onCreateTaskClick: () -> Unit,
+    onCreateDietClick: () -> Unit,
+    onNoteClick: (Int) -> Unit,
+    onTaskClick: () -> Unit,
+    onDietClick: () -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onTrashBinClick: () -> Unit,
@@ -110,9 +116,9 @@ fun MainScreen(
 
     // Screens count
     val screenPages = listOf(
-        NotesScreen(),
-        ToDoScreen(),
-        DoNotScreen()
+        "NotesScreen",
+        "ToDoScreen",
+        "DoNotScreen"
     )
 
     // Side bar component
@@ -172,7 +178,13 @@ fun MainScreen(
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        when(pagerState.currentPage){
+                            0 -> onCreateNoteClick()
+                            1 -> onCreateTaskClick()
+                            2 -> onCreateDietClick()
+                        }
+                    },
                     shape = CircleShape,
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
@@ -194,7 +206,7 @@ fun MainScreen(
             ) { screen ->
 
                 when(screen){
-                    0 -> { NotesScreen() }
+                    0 -> { NotesScreen(onNoteClick = onNoteClick) }
                     1 -> { ToDoScreen() }
                     2 -> { DoNotScreen() }
                     else -> {}
@@ -570,7 +582,7 @@ fun PreviewMainScreen(){
     NoteTasksTheme {
         Box(modifier = Modifier.padding(10.dp)){
             MainScreen(
-                onSearchClick = {}
+                //
             )
         }
     }

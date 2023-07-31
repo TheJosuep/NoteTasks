@@ -1,7 +1,7 @@
 package com.thejosuep.notetasks.di
 
 import com.thejosuep.notetasks.data.repository.RepositoryImpl
-import com.thejosuep.notetasks.domain.Repository
+import com.thejosuep.notetasks.domain.model.Repository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
