@@ -2,12 +2,12 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 
-    // Dagger - Hilt
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
-
     // KSP
     id("com.google.devtools.ksp")
+
+    // Dagger - Hilt
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {

@@ -1,4 +1,4 @@
-package com.thejosuep.notetasks.ui.screens.notes
+package com.thejosuep.notetasks.ui.screens.notes.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +22,7 @@ import androidx.paging.compose.itemKey
 import com.thejosuep.notetasks.domain.model.Note
 import com.thejosuep.notetasks.ui.components.NoteItem
 import com.thejosuep.notetasks.ui.components.QuickNoteTextField
+import com.thejosuep.notetasks.ui.screens.notes.NotesViewModel
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

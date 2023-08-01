@@ -10,6 +10,7 @@ import com.thejosuep.notetasks.domain.notes.DeleteNotesUseCase
 import com.thejosuep.notetasks.domain.notes.GetNotesUseCase
 import com.thejosuep.notetasks.domain.notes.UpdateNoteUseCase
 import com.thejosuep.notetasks.domain.model.Note
+import com.thejosuep.notetasks.domain.notes.GetNoteByIDUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,6 +22,7 @@ class NotesViewModel @Inject constructor(
     private val addNoteUseCase: AddNoteUseCase,
     private val deleteNotesUseCase: DeleteNotesUseCase,
     private val getNotesUseCase: GetNotesUseCase,
+    private val getNoteByIDUseCase: GetNoteByIDUseCase,
     private val updateNoteUseCase: UpdateNoteUseCase
 ): ViewModel() {
 
@@ -43,6 +45,10 @@ class NotesViewModel @Inject constructor(
     }
 
     private fun getAllNotes(): Flow<PagingData<NoteEntity>> = getNotesUseCase()
+
+    fun getNote(noteID: Int): Note {
+        return getNoteByIDUseCase(noteID)
+    }
 
     suspend fun addNote(note: Note){
         addNoteUseCase(note)

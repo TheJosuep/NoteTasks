@@ -53,7 +53,7 @@ fun QuickNoteTextField(
             if (text.isNotBlank()){
                 IconButton(
                     onClick = {
-                        onSendQuickNote(text)
+                        onSendQuickNote(text.trimStart())
                         text = ""
                         focusManager.clearFocus()
                         keyboardController?.hide()

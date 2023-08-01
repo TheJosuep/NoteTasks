@@ -11,6 +11,7 @@ object Graphs{
 sealed class Screens(val route: String){
     object MainScreen: Screens("main_screen")
     object NotesScreen: Screens("notes_screen")
+    object OpenNotesScreen: Screens("open_notes_screen")
     object ToDoScreen: Screens("to_do_screen")
     object DoNotScreen: Screens("do_not_screen")
     object SearchScreen: Screens("search_screen")

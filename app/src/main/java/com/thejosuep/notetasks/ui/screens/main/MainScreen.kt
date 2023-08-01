@@ -76,7 +76,7 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.thejosuep.notetasks.R
 import com.thejosuep.notetasks.ui.screens.dont.DoNotScreen
-import com.thejosuep.notetasks.ui.screens.notes.NotesScreen
+import com.thejosuep.notetasks.ui.screens.notes.main.NotesScreen
 import com.thejosuep.notetasks.ui.screens.todo.ToDoScreen
 import com.thejosuep.notetasks.ui.theme.NoteTasksTheme
 import kotlinx.coroutines.launch
@@ -328,7 +328,7 @@ fun MainNavigationBar(
     onLastVisitedClick: () -> Unit
 ){
     NavigationBar{
-        items.forEach {
+        for ( it in items ){
             NavigationBarItem(
                 selected = currentScreen == it.first,
                 onClick = {

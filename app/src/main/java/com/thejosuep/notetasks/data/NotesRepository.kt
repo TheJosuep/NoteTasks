@@ -20,6 +20,10 @@ class NotesRepository @Inject constructor(
         }.flow
     }
 
+    fun getNoteFromDatabase(noteID: Int): NoteEntity {
+        return notesDao.getNote(noteID)
+    }
+
     suspend fun insertNote(note: NoteEntity){
         notesDao.insert(note)
     }
