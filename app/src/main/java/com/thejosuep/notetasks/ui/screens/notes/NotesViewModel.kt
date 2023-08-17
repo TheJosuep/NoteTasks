@@ -46,7 +46,7 @@ class NotesViewModel @Inject constructor(
 
     private fun getAllNotes(): Flow<PagingData<NoteEntity>> = getNotesUseCase()
 
-    fun getNote(noteID: Int): Note {
+    suspend fun getNote(noteID: Int): Note {
         return getNoteByIDUseCase(noteID)
     }
 

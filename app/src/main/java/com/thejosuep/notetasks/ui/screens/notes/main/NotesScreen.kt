@@ -87,7 +87,8 @@ fun NotesScreen(
                     noteID = note.id,
                     title =  note.title,
                     description = note.description,
-                    date = SimpleDateFormat.getDateTimeInstance(2, 2).format(note.date),
+                    // Date style 2 shows day, month and year, time style 3 only shows hours and minutes in 12 hours format
+                    date = SimpleDateFormat.getDateTimeInstance(2, 3).format(note.date),
                     onCardClick = { id ->
                         onNoteClick(id)
                     },

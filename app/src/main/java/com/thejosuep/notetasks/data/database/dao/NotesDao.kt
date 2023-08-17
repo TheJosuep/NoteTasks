@@ -16,8 +16,8 @@ interface NotesDao {
     @Query("SELECT * FROM notes ORDER BY date DESC")
     fun getAllNotes(): PagingSource<Int, NoteEntity>
 
-    @Query("SELECT * FROM notes WHERE id = :noteID")
-    fun getNote(noteID: Int): NoteEntity
+    @Query("SELECT * FROM notes WHERE id =:noteID")
+    suspend fun getNote(noteID: Int): NoteEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(note: NoteEntity)

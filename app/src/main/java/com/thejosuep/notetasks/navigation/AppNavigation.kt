@@ -2,16 +2,26 @@ package com.thejosuep.notetasks.navigation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.thejosuep.notetasks.domain.model.Note
 import com.thejosuep.notetasks.ui.screens.main.MainScreen
+import com.thejosuep.notetasks.ui.screens.notes.NotesViewModel
+import com.thejosuep.notetasks.ui.screens.notes.open.OpenNotesScreen
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 @Composable
 fun AppNavigation(
@@ -35,7 +45,8 @@ fun AppNavigation(
                     onCreateTaskClick = { /*TODO*/ },
                     onCreateDietClick = { /*TODO*/ },
                     onNoteClick = { id ->
-                        id
+                        //Receives the id through the route
+                        navController.navigate(route = Screens.OpenNotesScreen.route + "/" + id)
                     },
                     onTaskClick = { /*TODO*/ },
                     onDietClick = { /*TODO*/ },
@@ -49,6 +60,37 @@ fun AppNavigation(
                     onThemeClick = onThemeClick,
                     onReportClick = { /*TODO*/ },
                     onHelpClick = { /*TODO*/ }
+                )
+            }
+
+            composable(
+                route = Screens.OpenNotesScreen.route+"/{id}",
+                arguments = listOf(navArgument("id"){
+                        type = NavType.IntType
+                    }
+                )
+            )
+            {
+                val id = it.arguments?.getInt("id")!!
+                val viewModel = hiltViewModel<NotesViewModel>()
+                var note: Note? = null
+
+                LaunchedEffect(key1 = "note", block = {
+                    note = viewModel.getNote(id)
+                })
+
+                OpenNotesScreen(
+                    title = note?.title,
+                    description = note?.description?: "",
+                    date = SimpleDateFormat.getDateTimeInstance(2, 3).format(note?.date),
+                    onDelete = {
+                        viewModel.viewModelScope.launch {
+                            viewModel.deleteNote(
+                                Note(id = note!!.id, title = note!!.title, description = note!!.description, date = note!!.date)
+                            )
+                        }
+                        navController.popBackStack()
+                    }
                 )
             }
         }

@@ -9,7 +9,7 @@ class GetNoteByIDUseCase @Inject constructor(
     private val repository: NotesRepository
 ) {
 
-    operator fun invoke(noteID: Int): Note {
-        return repository.getNoteFromDatabase(noteID).toNote()
+    suspend operator fun invoke(noteID: Int): Note {
+        return repository.getNoteFromDatabase(noteID)!!.toNote()
     }
 }
