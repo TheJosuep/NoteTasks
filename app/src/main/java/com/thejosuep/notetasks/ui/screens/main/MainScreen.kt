@@ -434,7 +434,7 @@ fun AppCard(){
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            // TODO: Add NoteTasks logo
+        // TODO: Add NoteTasks logo
             Icon(
                 imageVector = Icons.Default.Book,
                 contentDescription = "NoteTasks icon",
