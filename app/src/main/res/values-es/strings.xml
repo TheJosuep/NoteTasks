@@ -6,6 +6,7 @@
     <string name="title_history">Último abierto</string>
     <string name="placeholder_add_quick_note">Escribe aquí para agregar una nota...</string>
     <string name="placeholder_no_description">Sin texto</string>
+    <string name="placeholder_notes_title">Título</string>
     <string name="title_settings">Configuración</string>
     <string name="title_trash_bin">Papelera</string>
     <string name="title_safe_notes">Notas seguras</string>
@@ -16,4 +17,5 @@
     <string name="title_help">Ayuda</string>
     <string name="menu_delete_note">Eliminar</string>
     <string name="menu_pin_note">Fijar</string>
+    <string name="placeholder_notes_description">Escriba aquí...</string>
 </resources>

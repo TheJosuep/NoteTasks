@@ -3,6 +3,8 @@ package com.thejosuep.notetasks.navigation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -73,25 +75,27 @@ fun AppNavigation(
             {
                 val id = it.arguments?.getInt("id")!!
                 val viewModel = hiltViewModel<NotesViewModel>()
-                var note: Note? = null
+                val note by viewModel.getNote(id).collectAsState(null)
 
-                LaunchedEffect(key1 = "note", block = {
-                    note = viewModel.getNote(id)
-                })
-
-                OpenNotesScreen(
-                    title = note?.title,
-                    description = note?.description?: "",
-                    date = SimpleDateFormat.getDateTimeInstance(2, 3).format(note?.date),
-                    onDelete = {
-                        viewModel.viewModelScope.launch {
-                            viewModel.deleteNote(
-                                Note(id = note!!.id, title = note!!.title, description = note!!.description, date = note!!.date)
-                            )
+                // Checks if the note is non-null
+                note?.let { note ->
+                    OpenNotesScreen(
+                        title = note.title,
+                        description = note.description,
+                        date = SimpleDateFormat.getDateTimeInstance(2, 3).format(note.date),
+                        onBack = {
+                            navController.popBackStack()
+                        },
+                        onDelete = {
+                            viewModel.viewModelScope.launch {
+                                viewModel.deleteNote(
+                                    Note(id = note.id, title = note.title, description = note.description, date = note.date)
+                                )
+                            }
+                            navController.popBackStack()
                         }
-                        navController.popBackStack()
-                    }
-                )
+                    )
+                }
             }
         }
 

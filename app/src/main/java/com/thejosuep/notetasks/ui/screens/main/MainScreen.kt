@@ -196,7 +196,7 @@ fun MainScreen(
                 }
             },
             floatingActionButtonPosition = FabPosition.End
-        ) {paddingValues ->
+        ) { paddingValues ->
 
             HorizontalPager(
                 count = screenPages.size,
@@ -280,7 +280,6 @@ fun MainTopBar(
     onTitleClick: () -> Unit,
     onSearchClick: () -> Unit
 ){
-
     TopAppBar(
         title = {
             TopBarTitleButton(

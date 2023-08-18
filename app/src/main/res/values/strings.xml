@@ -14,6 +14,10 @@
     <string name="menu_delete_note">Delete</string>
     <string name="menu_pin_note">Pin</string>
 
+    // Editing notes
+    <string name="placeholder_notes_title">Title</string>
+    <string name="placeholder_notes_description">Write here...</string>
+
     // Side bar labels
     <string name="title_settings">Settings</string>
     <string name="title_trash_bin">Trash bin</string>

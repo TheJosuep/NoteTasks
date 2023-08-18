@@ -13,6 +13,7 @@ import com.thejosuep.notetasks.domain.model.Note
 import com.thejosuep.notetasks.domain.notes.GetNoteByIDUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -46,8 +47,8 @@ class NotesViewModel @Inject constructor(
 
     private fun getAllNotes(): Flow<PagingData<NoteEntity>> = getNotesUseCase()
 
-    suspend fun getNote(noteID: Int): Note {
-        return getNoteByIDUseCase(noteID)
+    fun getNote(noteID: Int): Flow<Note> = flow {
+        emit(getNoteByIDUseCase(noteID))
     }
 
     suspend fun addNote(note: Note){
