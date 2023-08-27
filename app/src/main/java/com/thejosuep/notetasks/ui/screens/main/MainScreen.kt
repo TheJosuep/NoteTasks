@@ -16,24 +16,25 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Notes
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.CheckBox
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.DarkMode
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.WarningAmber
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Book
+import androidx.compose.material.icons.rounded.CalendarToday
+import androidx.compose.material.icons.rounded.CheckBox
+import androidx.compose.material.icons.rounded.ExpandLess
+import androidx.compose.material.icons.rounded.ExpandMore
+import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Notes
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -108,10 +109,10 @@ fun MainScreen(
 
     val navigationList = listOf(
         // Structure: Number in the navigation bar, icon and screen's title
-        Triple(0, Icons.Default.Notes, R.string.title_notes),
-        Triple(1, Icons.Outlined.CheckBox, R.string.title_to_do),
-        Triple(2, Icons.Default.CalendarToday, R.string.title_do_not),
-        Triple(3, Icons.Default.History, R.string.title_history)
+        Triple(0, Icons.Rounded.Notes, R.string.title_notes),
+        Triple(1, Icons.Rounded.CheckBox, R.string.title_to_do),
+        Triple(2, Icons.Rounded.CalendarToday, R.string.title_do_not),
+        Triple(3, Icons.Rounded.History, R.string.title_history)
     )
 
     // Screens count
@@ -189,7 +190,7 @@ fun MainScreen(
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        imageVector = Icons.Rounded.Add,
                         contentDescription = "Add icon",
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
@@ -260,7 +261,7 @@ fun TopBarTitleButton(
                     contentAlignment = Alignment.CenterEnd
                 ){
                     Icon(
-                        imageVector = if (isNavigationOpened) Icons.Outlined.ExpandLess else Icons.Default.ExpandMore,
+                        imageVector = if (isNavigationOpened) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
                         contentDescription = "Show/hide navigation icon"
                     )
                 }
@@ -299,7 +300,7 @@ fun MainTopBar(
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
-                    imageVector = Icons.Default.Menu,
+                    imageVector = Icons.Rounded.Menu,
                     contentDescription = "Menu icon",
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
@@ -308,7 +309,7 @@ fun MainTopBar(
         actions = {
             IconButton(onClick = { onSearchClick() }) {
                 Icon(
-                    imageVector = Icons.Default.Search,
+                    imageVector = Icons.Rounded.Search,
                     contentDescription = "Search icon",
                     tint = MaterialTheme.colorScheme.onSurface
                 )
@@ -382,7 +383,7 @@ fun SideAppBar(
             ){
                 SideBarItem(icon = Icons.Outlined.Settings, label = stringResource(id = R.string.title_settings), onClick = onSettingsClick)
 
-                SideBarItem(icon = Icons.Outlined.Delete, label = stringResource(id = R.string.title_trash_bin), onClick = onTrashBinClick)
+                SideBarItem(icon = Icons.Outlined.DeleteOutline, label = stringResource(id = R.string.title_trash_bin), onClick = onTrashBinClick)
 
                 SideBarItem(icon = Icons.Outlined.Lock, label = stringResource(id = R.string.title_safe_notes), onClick = onSafeNotesClick)
 
@@ -436,7 +437,7 @@ fun AppCard(){
         ){
         // TODO: Add NoteTasks logo
             Icon(
-                imageVector = Icons.Default.Book,
+                imageVector = Icons.Rounded.Book,
                 contentDescription = "NoteTasks icon",
                 modifier = Modifier.size(32.dp)
             )
@@ -559,10 +560,10 @@ fun PreviewMainNavigationBar(){
                 currentScreen = 0,
                 maxScreens = 4,
                 items = listOf(
-                    Triple(0, Icons.Default.Notes, R.string.title_notes),
-                    Triple(1, Icons.Outlined.CheckBox, R.string.title_to_do),
-                    Triple(2, Icons.Default.CalendarToday, R.string.title_do_not),
-                    Triple(3, Icons.Default.History, R.string.title_history)
+                    Triple(0, Icons.Rounded.Notes, R.string.title_notes),
+                    Triple(1, Icons.Rounded.CheckBox, R.string.title_to_do),
+                    Triple(2, Icons.Rounded.CalendarToday, R.string.title_do_not),
+                    Triple(3, Icons.Rounded.History, R.string.title_history)
                 ),
                 onIconClick = {},
                 onLastVisitedClick = {}
@@ -620,7 +621,7 @@ fun PreviewSideBarItem(){
     NoteTasksTheme {
         Box(modifier = Modifier.padding(10.dp)){
             SideBarItem(
-                icon = Icons.Outlined.Settings,
+                icon = Icons.Default.Settings,
                 label = "Settings",
                 onClick = {}
             )

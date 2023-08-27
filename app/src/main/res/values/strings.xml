@@ -15,7 +15,8 @@
     <string name="menu_pin_note">Pin</string>
 
     // Editing notes
-    <string name="placeholder_notes_title">Title</string>
+    <string name="title_no_title_note">No title</string>
+    <string name="placeholder_notes_title">Note title</string>
     <string name="placeholder_notes_description">Write here...</string>
 
     // Side bar labels

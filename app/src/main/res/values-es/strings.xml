@@ -6,7 +6,8 @@
     <string name="title_history">Último abierto</string>
     <string name="placeholder_add_quick_note">Escribe aquí para agregar una nota...</string>
     <string name="placeholder_no_description">Sin texto</string>
-    <string name="placeholder_notes_title">Título</string>
+    <string name="title_no_title_note">Sin título</string>
+    <string name="placeholder_notes_title">Título de la nota</string>
     <string name="title_settings">Configuración</string>
     <string name="title_trash_bin">Papelera</string>
     <string name="title_safe_notes">Notas seguras</string>

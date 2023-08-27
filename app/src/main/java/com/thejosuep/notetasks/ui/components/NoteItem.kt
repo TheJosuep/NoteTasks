@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -107,7 +107,7 @@ fun NoteItem(
                                 menuExpanded = !menuExpanded
                             }
                         ) {
-                            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "More vert icon")
+                            Icon(imageVector = Icons.Rounded.MoreVert, contentDescription = "More vert icon")
                         }
 
                         // TODO: Pin note icon

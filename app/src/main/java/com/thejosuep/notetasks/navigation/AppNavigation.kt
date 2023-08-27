@@ -2,7 +2,6 @@ package com.thejosuep.notetasks.navigation
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -48,7 +47,9 @@ fun AppNavigation(
                     onCreateDietClick = { /*TODO*/ },
                     onNoteClick = { id ->
                         //Receives the id through the route
-                        navController.navigate(route = Screens.OpenNotesScreen.route + "/" + id)
+                        navController.navigate(route = Screens.OpenNotesScreen.route + "/" + id){
+                            launchSingleTop = true
+                        }
                     },
                     onTaskClick = { /*TODO*/ },
                     onDietClick = { /*TODO*/ },
